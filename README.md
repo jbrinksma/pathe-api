@@ -1,4 +1,4 @@
-# pathe-api
+# (WIP) pathe-api
 Python API wrapper module for Pathé's API
 
 Install with

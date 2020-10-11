@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name = "pathe-api",
-    version = "0.1",
+    version = "0.2",
     author = "Jorn Brinksma",
     description = "Wrapper module for Pathe Cinema's API.",
     classifiers = [

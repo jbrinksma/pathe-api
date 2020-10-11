@@ -35,16 +35,41 @@ class PatheSeat:
 
 
 class PatheSeatsRow:
-    def __init__(self, json_row: dict):
-        self.name = json_row["name"]
-        self.seats = [PatheSeat(seat) for seat in json_row["seats"]]
+    def __init__(self, row_json: dict):
+        self.name = row_json["name"]
+        self.seats = [PatheSeat(seat) for seat in row_json["seats"]]
 
 
 class PatheSeats:
-    def __init__(self, json_seats: dict):
-        json_seats = json_seats["blocks"][0]
-        self.id = json_seats["id"]
-        self.rows = [PatheSeatsRow(row) for row in json_seats["rows"]]
+    def __init__(self, seats_json: dict):
+        seats_json = seats_json["blocks"][0]
+        self.id = seats_json["id"]
+        self.rows = [PatheSeatsRow(row) for row in seats_json["rows"]]
+
+
+class PatheCity:
+    def __init__(self, city_json: dict):
+        self.id = city_json["id"]
+        self.name = city_json["name"]
+        self.code = city_json["code"]
+        self.province = city_json["province"]
+
+
+class PatheCinema:
+    def __init__(self, cinema_json: dict):
+        self.id = cinema_json["id"]
+        self.name = cinema_json["name"]
+        self.city = PatheCity(cinema_json["city"])
+        self.city_id = cinema_json["cityId"]
+        self.code = cinema_json["code"]
+        self.address = cinema_json["address"]
+        self.zipcode = cinema_json["zipcode"]
+        self.lat = cinema_json["lat"]
+        self.lon = cinema_json["lon"]
+        self.phonenumber = cinema_json["phonenumber"]
+        self.site_id = cinema_json["siteId"]
+        self.ticket_sales_type_id = cinema_json["ticketSalesTypeId"]
+        self.image = cinema_json["image"]
 
 
 class PatheApi:
@@ -61,8 +86,11 @@ class PatheApi:
         except ValueError:
             raise PatheApiException(REQUEST_FAILED)
 
-    def get_cinemas(self) -> dict:
-        return self.get_json_request(CINEMAS_REQ_PATH)
+    def get_cinemas(self, get_raw_json: bool = False) -> list or dict:
+        raw_json = self.get_json_request(CINEMAS_REQ_PATH)
+        if get_raw_json:
+            return raw_json
+        return [PatheCinema(cinema_json) for cinema_json in raw_json]
     
     def get_labels(self) -> dict:
         return self.get_json_request(LABELS_REQ_PATH)
@@ -80,7 +108,7 @@ class PatheApi:
             }
         )
     
-    def get_seats(self, schedule_id: str, get_raw_json: bool = False) -> dict:
+    def get_seats(self, schedule_id: str, get_raw_json: bool = False) -> list or dict:
         raw_json = self.get_json_request(SEATS_REQ_PATH.format(schedule_id))
         if get_raw_json:
             return raw_json

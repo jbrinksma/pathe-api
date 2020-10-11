@@ -1,11 +1,11 @@
 import requests
 import json
 
-from exceptions import (
+from .exceptions import (
     PatheApiException,
     REQUEST_FAILED
 )
-from config import (
+from .config import (
     AUTH_TOKEN_HEADER_NAME,
     AUTH_TOKEN,
     API_MAIN_BASE_URL,
@@ -18,11 +18,11 @@ from config import (
     SEAT_AVAILABLE,
     SEAT_TYPE_HANDICAPPED
 )
-from utils import (
+from .utils import (
     get_current_date,
     cinemas_to_req_str
 )
-from classes import (
+from .classes import (
     PatheCinema,
     PatheTimetable,
     PatheSeats
@@ -53,7 +53,7 @@ class PatheApi:
         """Experimental"""
         return self.get_json_request(LABELS_REQ_PATH)
 
-    def get_timetable(self, cinemas: list, date: str, get_raw_json: bool = False) -> PatheTimetable or dict:
+    def get_timetable(self, cinemas: list, date: str = get_current_date(), get_raw_json: bool = False) -> PatheTimetable or dict:
         """Get all movies running on a specific date.
 
         Getting the seat information per `PatheSchedule` requires an API request per schedule.
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     try:
         api = PatheApi()
         cinemas = api.get_cinemas()
-        timetable = api.get_timetable(cinemas, get_current_date())
+        timetable = api.get_timetable(cinemas)
         for cinema in timetable.cinemas:
             print(cinema)
         for movie in timetable.movies:
